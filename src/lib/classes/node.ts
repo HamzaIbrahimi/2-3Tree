@@ -1,19 +1,30 @@
-class TreeNode {
-	#keys: string[] = [];
-	left: TreeNode | null = null;
-	middle: TreeNode | null = null;
-	right: TreeNode | null = null;
+export default class TreeNode {
+	#keys: string[];
+	left: TreeNode | null;
+	middle: TreeNode | null;
+	right: TreeNode | null;
 	//Helps with splitting upwards
-	parent: TreeNode | null = null;
+	parent: TreeNode | null;
+
+	constructor() {
+		this.#keys = [];
+		this.parent = null;
+		this.left = null;
+		this.middle = null;
+		this.right = null;
+	}
 
 	insertKey(data: string) {
 		//No duplicates allowed
 		if (this.#keys.includes(data)) {
 			return;
 		}
-		this.#keys.push(data);
-		//Keys are sorted once added
-		this.#keys.sort();
+		//Do not add more than 3 keys
+		if (!this.isFull()) {
+			this.#keys.push(data);
+			//Keys are sorted once added
+			this.#keys.sort();
+		}
 	}
 
 	get keys(): string[] {
