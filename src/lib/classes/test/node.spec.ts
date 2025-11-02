@@ -88,3 +88,18 @@ describe('A node with links should not be a leaf', () => {
 		expect(node.isLeaf()).toBeFalsy();
 	});
 });
+
+describe('Check if its a 2Node', () => {
+	it('checks whether a node is a 2Node', () => {
+		node.insertKey('A');
+		expect(node.isTwoNode()).toBeTruthy();
+	});
+});
+
+describe('Check if its a 3Node', () => {
+	it('checks whether a node is a 2Node', () => {
+		node.insertKey('A');
+		node.insertKey('B');
+		expect(node.isThreeNode()).toBeTruthy();
+	});
+});

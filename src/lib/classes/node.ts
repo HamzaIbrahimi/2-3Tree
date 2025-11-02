@@ -35,6 +35,14 @@ export default class TreeNode {
 		return this.#keys.length;
 	}
 
+	isTwoNode(): boolean {
+		return this.#keys.length === 1;
+	}
+
+	isThreeNode(): boolean {
+		return this.#keys.length === 2;
+	}
+
 	isLeaf(): boolean {
 		return !this.left && !this.right && !this.middle;
 	}
