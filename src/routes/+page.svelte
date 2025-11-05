@@ -1,5 +1,5 @@
 <script lang="ts">
-	const name = 'User';
+	import Input from '$lib/components/Input.svelte';
 </script>
 
-<h1 class="text-lg">Hello {name}!</h1>
+<Input />
