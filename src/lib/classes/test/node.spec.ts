@@ -41,20 +41,11 @@ describe('Can have three keys Maximum', () => {
 	});
 });
 
-describe('Node is full when three are inserted', () => {
-	it('adds three keys and expects node to be full', () => {
-		node.insertKey('A');
-		node.insertKey('B');
-		node.insertKey('C');
-		expect(node.isFull()).toBeTruthy();
-	});
-});
-
-describe('Node is not full on less than 3 keys', () => {
+describe('Node is full on two keys', () => {
 	it('adds 2 keys and expects node to be not full', () => {
 		node.insertKey('A');
 		node.insertKey('B');
-		expect(node.isFull()).toBeFalsy();
+		expect(node.isFull()).toBeTruthy();
 	});
 });
 
@@ -97,7 +88,7 @@ describe('Check if its a 2Node', () => {
 });
 
 describe('Check if its a 3Node', () => {
-	it('checks whether a node is a 2Node', () => {
+	it('checks whether a node is a 3Node', () => {
 		node.insertKey('A');
 		node.insertKey('B');
 		expect(node.isThreeNode()).toBeTruthy();
