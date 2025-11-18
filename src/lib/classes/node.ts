@@ -20,7 +20,7 @@ export default class TreeNode {
 			return;
 		}
 		//Do not add more than 3 keys
-		if (!this.isFull()) {
+		if (this.#keys.length < 3) {
 			this.#keys.push(data);
 			//Keys are sorted once added
 			this.#keys.sort();
@@ -48,6 +48,10 @@ export default class TreeNode {
 	}
 
 	isFull(): boolean {
-		return this.#keys.length === 3;
+		return this.#keys.length === 2;
+	}
+
+	toString() {
+		return this.keys.join('-');
 	}
 }
