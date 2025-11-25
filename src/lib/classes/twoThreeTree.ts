@@ -2,9 +2,11 @@ import TreeNode from './node';
 
 export default class TwoThreeTree {
 	root: TreeNode | null;
+	#size: number;
 
 	constructor() {
 		this.root = null;
+		this.#size = 0;
 	}
 
 	search(value: string): TreeNode | null {
@@ -39,29 +41,35 @@ export default class TwoThreeTree {
 		return null;
 	}
 
+	size(): number {
+		return this.#size;
+	}
+
 	/* --------------------------- INSERT --------------------------- */
 
 	insert(value: string): void {
+		if (this.search(value)) {
+			return;
+		}
+
 		if (!this.root) {
 			this.root = new TreeNode([value], []);
+			this.#size++;
 			return;
 		}
 
 		const result = this.#insertRecursive(this.root, value);
-
 		if (result && result.type === 'split') {
 			// root split, promote middle key into a new root
 			this.root = new TreeNode([result.key], [result.left, result.right]);
 		}
+		this.#size++;
 	}
 
 	#insertRecursive(
 		node: TreeNode,
 		value: string,
 	): { type: 'split'; key: string; left: TreeNode; right: TreeNode } | null {
-		if (node.keys.includes(value)) {
-			return null;
-		}
 		// -- Leaf insert
 		if (node.isLeaf()) {
 			return this.#insertIntoLeaf(node, value);

@@ -61,41 +61,80 @@ describe('Handles duplicate keys', () => {
 	});
 });
 
-// describe('Handles non-sequential insertion', () => {
-// 	it('inserts keys in descending order', () => {
-// 		tree.insert('E');
-// 		tree.insert('D');
-// 		tree.insert('C');
-// 		tree.insert('B');
-// 		tree.insert('A');
-// 		// Verify structure
-// 	});
+describe('Handles non-sequential insertion', () => {
+	it('inserts keys in descending order', () => {
+		tree.insert('E');
+		tree.insert('D');
+		tree.insert('C');
+		tree.insert('B');
+		tree.insert('A');
+		expect(tree.root?.keys).toEqual(['B', 'D']);
+		const [left, mid, right] = tree.root!.children;
+		expect(left.keys[0]).toBe('A');
+		expect(mid.keys[0]).toBe('C');
+		expect(right.keys[0]).toBe('E');
+	});
+});
+describe('Handles random order', () => {
+	it('inserts keys in random order', () => {
+		tree.insert('C');
+		tree.insert('A');
+		tree.insert('E');
+		tree.insert('B');
+		tree.insert('D');
+		expect(tree.root?.keys).toEqual(['C']);
+		const [left, right] = tree.root!.children;
+		expect(left.keys).toEqual(['A', 'B']);
+		expect(right.keys).toEqual(['D', 'E']);
+	});
+});
 
-// 	it('inserts keys in random order', () => {
-// 		tree.insert('C');
-// 		tree.insert('A');
-// 		tree.insert('E');
-// 		tree.insert('B');
-// 		tree.insert('D');
-// 		expect(tree.root?.keys).toEqual(['B', 'D']);
-// 	});
-// });
+describe('Creates deeper tree structure', () => {
+	it('inserts 10 keys and maintains balance', () => {
+		//Book example thorough test
+		/*		│-──---- [S | X]
+│       ┌──---- [R]
+│       │       └──---- [P]
+└──---- [M]
+        │       ┌──---- [H | L]
+        └──---- [E]
+                └──---- [A | C] */
+		const keys = ['S', 'E', 'A', 'R', 'C', 'H', 'X', 'M', 'P', 'L'];
+		keys.forEach((k) => tree.insert(k));
+		expect(tree.root?.keys).toEqual(['M']);
+		const [left_root_child, right_root_child] = tree.root!.children;
+		expect([...left_root_child.keys, ...right_root_child.keys]).toEqual(['E', 'R']);
+		const [left, right] = left_root_child.children;
+		const [leftR, rightR] = right_root_child.children;
+		expect([...left.keys, ...right.keys]).toEqual(['A', 'C', 'H', 'L']);
+		expect([...leftR.keys, ...rightR.keys]).toEqual(['P', 'S', 'X']);
+	});
+});
 
-// describe('Creates deeper tree structure', () => {
-// 	it('inserts 10 keys and maintains balance', () => {
-// 		const keys = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
-// 		keys.forEach((k) => tree.insert(k));
-// 		// Verify tree height and structure
-// 	});
-// });
-// describe('Should find any key on the root', () => {
-// 	it('Adds 3 keys and finds them', () => {
-// 		tree.insert('A');
-// 		tree.insert('B');
-// 		tree.insert('C');
-// 		expect(tree.find('A')).toEqual(tree.root?.left);
-// 	});
-// });
+describe('Should return get correct size', () => {
+	it('Adds 3 keys and returns size', () => {
+		tree.insert('A');
+		tree.insert('B');
+		tree.insert('C');
+		expect(tree.size()).toBe(3);
+	});
+});
+describe('Should return get correct size on duplicate keys', () => {
+	it('Adds 3 keys and returns size', () => {
+		tree.insert('A');
+		tree.insert('A');
+		tree.insert('A');
+		expect(tree.size()).toBe(1);
+	});
+});
+
+describe('Should return get correct size on larger tree', () => {
+	it('Adds 10 keys and returns size', () => {
+		const keys = ['S', 'E', 'A', 'R', 'C', 'H', 'X', 'M', 'P', 'L'];
+		keys.forEach((k) => tree.insert(k));
+		expect(tree.size()).toBe(10);
+	});
+});
 
 // describe('Should find deeper elements in the tree', () => {
 // 	it('inserts 5 keys into the root and finds E', () => {
