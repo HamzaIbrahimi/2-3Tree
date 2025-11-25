@@ -3,9 +3,9 @@ import TwoThreeTree from './classes/twoThreeTree';
 import prettyPrint from './util/prettyPrint';
 
 const twoThreeTree = new TwoThreeTree();
-twoThreeTree.insert('A');
-twoThreeTree.insert('B');
-twoThreeTree.insert('C');
-
+const alphabets = 'SEARCHXMPL'.split('');
+const alp = 'ACEHLMPRSX'.split('');
+for (const key of alp) {
+	twoThreeTree.insert(key);
+}
 console.log(prettyPrint(twoThreeTree.root));
-console.log(twoThreeTree.root?.middle?.keys);
