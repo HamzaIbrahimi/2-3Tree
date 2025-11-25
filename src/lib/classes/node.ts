@@ -1,57 +1,21 @@
 export default class TreeNode {
-	#keys: string[];
-	left: TreeNode | null;
-	middle: TreeNode | null;
-	right: TreeNode | null;
-	//Helps with splitting upwards
-	parent: TreeNode | null;
+	keys: string[];
+	children: TreeNode[];
 
-	constructor() {
-		this.#keys = [];
-		this.parent = null;
-		this.left = null;
-		this.middle = null;
-		this.right = null;
+	constructor(keys: string[] = [], children: TreeNode[] = [] as TreeNode[]) {
+		this.keys = keys; //1 or 2 keys
+		this.children = children; //0 or 2 or 3 children
 	}
 
-	insertKey(data: string) {
-		//No duplicates allowed
-		if (this.#keys.includes(data)) {
-			return;
-		}
-		//Do not add more than 3 keys
-		if (this.#keys.length < 3) {
-			this.#keys.push(data);
-			//Keys are sorted once added
-			this.#keys.sort();
-		}
+	isLeaf() {
+		return this.children.length === 0;
 	}
 
-	get keys(): string[] {
-		return this.#keys;
+	is2Node() {
+		return this.keys.length === 1;
 	}
 
-	get keyCount(): number {
-		return this.#keys.length;
-	}
-
-	isTwoNode(): boolean {
-		return this.#keys.length === 1;
-	}
-
-	isThreeNode(): boolean {
-		return this.#keys.length === 2;
-	}
-
-	isLeaf(): boolean {
-		return !this.left && !this.right && !this.middle;
-	}
-
-	isFull(): boolean {
-		return this.#keys.length === 2;
-	}
-
-	toString() {
-		return this.keys.join('-');
+	is3Node() {
+		return this.keys.length === 2;
 	}
 }
