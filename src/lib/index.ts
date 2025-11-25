@@ -4,8 +4,7 @@ import prettyPrint from './util/prettyPrint';
 
 const twoThreeTree = new TwoThreeTree();
 const alphabets = 'SEARCHXMPL'.split('');
-const alp = 'ACEHLMPRSX'.split('');
-for (const key of alp) {
+for (const key of alphabets) {
 	twoThreeTree.insert(key);
 }
 console.log(prettyPrint(twoThreeTree.root));

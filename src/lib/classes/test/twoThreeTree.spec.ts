@@ -136,13 +136,24 @@ describe('Should return get correct size on larger tree', () => {
 	});
 });
 
-// describe('Should find deeper elements in the tree', () => {
-// 	it('inserts 5 keys into the root and finds E', () => {
-// 		tree.insert('A');
-// 		tree.insert('B');
-// 		tree.insert('C');
-// 		tree.insert('D');
-// 		tree.insert('E');
-// 		expect(tree.find('E')?.keys).toContain('E');
-// 	});
-// });
+describe('Should find deeper elements in the tree', () => {
+	it('inserts 3 keys into the tree and gets size', () => {
+		tree.insert('A');
+		tree.insert('B');
+		tree.insert('C');
+		//Search returns the node that contains the key
+		expect(tree.search('C')?.keys).toContain('C');
+		expect(tree.size()).toBe(3);
+	});
+});
+describe('Should find deeper elements in the tree', () => {
+	it('inserts alphabet into the tree and finds elements and also size', () => {
+		const keys = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+		keys.forEach((k) => tree.insert(k));
+		expect(tree.search('E')?.keys).toContain('E');
+		expect(tree.search('Z')?.keys).toContain('Z');
+		expect(tree.search('A')?.keys).toContain('A');
+		expect(tree.search('M')?.keys).toContain('M');
+		expect(tree.size()).toBe(26);
+	});
+});
