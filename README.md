@@ -7,7 +7,7 @@ Let's take an example taken directly from the Algorithms book by Robert Sedgewic
 
 ### Example 1 - page 430 of the Algorithms Book
 
-<img src = "./src/lib/assets/tree_pics/example_1_tree.png" alt = "a 2-3 tree example" style = "width: 100%; height:200px">
+<img src = "./src/lib/assets/tree_pics/example_1_tree.png" alt = "a 2-3 tree example" style = "width: 400px; height:200px">
 
 ### Code
 
