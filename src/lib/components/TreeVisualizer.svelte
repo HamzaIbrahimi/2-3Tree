@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import TwoThreeTree from '$lib/classes/twoThreeTree';
-	import TreeVisualizer from '$lib/viusalization/TreeVisualizer';
+	import TwoThreeTree from '$lib/classes/TwoThreeTree';
+	import TreeVisualizer from '$lib/visualization/TreeVisualizer';
 
 	// Props for parent component to control the tree
 	interface Props {
@@ -37,6 +37,11 @@
 		const result = tree.search(value) !== null;
 		if (onSearch) return onSearch(value);
 		return result;
+	}
+
+	export async function animateSearch(value: string): Promise<boolean> {
+		if (!visualizer) return false;
+		return await visualizer.animateSearch(value);
 	}
 
 	export async function remove(value: string) {
