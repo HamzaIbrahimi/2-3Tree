@@ -2,9 +2,35 @@
 	import Information from './Information.svelte';
 	let value = $state('');
 	let buttons = ['Insert', 'Find', 'Delete'];
+	let isProcessing = $state(false);
+
+	interface Props {
+		onInsert?: (value: string) => Promise<void>;
+		onDelete?: (value: string) => Promise<void>;
+		onFind?: (value: string) => void;
+	}
+	let { onInsert, onDelete, onFind }: Props = $props();
+	async function handleButtonClick(action: string) {
+		if (!value.trim() || isProcessing) return;
+
+		isProcessing = true;
+
+		try {
+			if (action === 'Insert' && onInsert) {
+				await onInsert(value.toUpperCase());
+			} else if (action === 'Delete' && onDelete) {
+				await onDelete(value.toUpperCase());
+			} else if (action === 'Find' && onFind) {
+				onFind(value.toUpperCase());
+			}
+			value = ''; // Clear input after action
+		} finally {
+			isProcessing = false;
+		}
+	}
 </script>
 
-<form action="">
+<form action="" onsubmit={(e) => e.preventDefault()}>
 	<div class="input-container border-top flex items-center justify-center gap-2 p-3">
 		<div>
 			<input
@@ -21,6 +47,9 @@
 		<div class="flex gap-2">
 			{#each buttons as button}
 				<button
+					type="button"
+					onclick={() => handleButtonClick(button)}
+					disabled={isProcessing || !value.trim()}
 					class="cursor-pointer rounded-full bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
 				>
 					{button}
