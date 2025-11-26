@@ -58,7 +58,8 @@
 		</div>
 	</div>
 </form>
-<Information />
+
+<!-- <Information /> -->
 
 <style>
 	.input-container {
