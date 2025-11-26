@@ -26,11 +26,14 @@
 		await treeViz.remove(value);
 	}
 
-	function handleFind(value: string) {
+	async function handleFind(value: string) {
 		if (!treeViz) return;
 
-		const found = treeViz.search(value);
-		alert(found ? `Found '${value}' in the tree!` : `'${value}' not found in the tree.`);
+		const found = await treeViz.animateSearch(value);
+		// Optional: show alert after animation
+		setTimeout(() => {
+			alert(found ? `Found '${value}' in the tree!` : `'${value}' not found in the tree.`);
+		}, 100);
 	}
 </script>
 
