@@ -273,3 +273,83 @@ describe('Deletes ALGOR from the algsTree', () => {
 		expect(algsTree.root!.children.map((k) => k.keys).flat()).toEqual(['H', 'M', 'T']);
 	});
 });
+
+describe('Deletes ALGORI from the algsTree', () => {
+	it('Deletes a key from a root 2 node', () => {
+		algsTree.delete('A');
+		algsTree.delete('L');
+		algsTree.delete('G');
+		algsTree.delete('O');
+		algsTree.delete('R');
+		algsTree.delete('I');
+		expect(algsTree.size()).toBe(4);
+		expect(algsTree.root!.keys).toEqual(['S']);
+		expect(algsTree.root!.children.map((k) => k.keys).flat()).toEqual(['H', 'M', 'T']);
+	});
+});
+
+describe('Deletes ALGORIT from the algsTree', () => {
+	it('Deletes a leaf node', () => {
+		algsTree.delete('A');
+		algsTree.delete('L');
+		algsTree.delete('G');
+		algsTree.delete('O');
+		algsTree.delete('R');
+		algsTree.delete('I');
+		algsTree.delete('T');
+		expect(algsTree.size()).toBe(3);
+		expect(algsTree.root!.keys).toEqual(['M']);
+		expect(algsTree.root!.children.map((k) => k.keys).flat()).toEqual(['H', 'S']);
+	});
+});
+
+describe('Deletes ALGORITH from the algsTree', () => {
+	it('Deletes a leaf node', () => {
+		algsTree.delete('A');
+		algsTree.delete('L');
+		algsTree.delete('G');
+		algsTree.delete('O');
+		algsTree.delete('R');
+		algsTree.delete('I');
+		algsTree.delete('T');
+		algsTree.delete('H');
+		expect(algsTree.size()).toBe(2);
+		expect(algsTree.root!.keys).toEqual(['M', 'S']);
+		expect(algsTree.root?.children).toEqual([]);
+	});
+});
+
+describe('Deletes ALGORITHM from the algsTree', () => {
+	it('Deletes a key from a 2 node root', () => {
+		algsTree.delete('A');
+		algsTree.delete('L');
+		algsTree.delete('G');
+		algsTree.delete('O');
+		algsTree.delete('R');
+		algsTree.delete('I');
+		algsTree.delete('T');
+		algsTree.delete('H');
+		algsTree.delete('M');
+		expect(algsTree.size()).toBe(1);
+		expect(algsTree.root!.keys).toEqual(['S']);
+		expect(algsTree.root?.children).toEqual([]);
+	});
+});
+
+describe('Deletes ALGORITHMS from the algsTree', () => {
+	it('Deletes all keys from algsTree', () => {
+		algsTree.delete('A');
+		algsTree.delete('L');
+		algsTree.delete('G');
+		algsTree.delete('O');
+		algsTree.delete('R');
+		algsTree.delete('I');
+		algsTree.delete('T');
+		algsTree.delete('H');
+		algsTree.delete('M');
+		algsTree.delete('S');
+		expect(algsTree.size()).toBe(0);
+		expect(algsTree.root!.keys).toEqual([]);
+		expect(algsTree.root?.children).toEqual([]);
+	});
+});
