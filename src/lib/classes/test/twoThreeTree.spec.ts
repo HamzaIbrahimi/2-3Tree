@@ -13,6 +13,8 @@ describe('Has root on initialization', () => {
 	});
 });
 
+//------- Insert method tests -------
+
 describe('A key can be inserted into the tree', () => {
 	it('inserts a key into the tree', () => {
 		tree.insert('A');
@@ -111,7 +113,15 @@ describe('Creates deeper tree structure', () => {
 	});
 });
 
-describe('Should return get correct size', () => {
+//------- Size method tests -------
+
+describe('Should return the correct size', () => {
+	it('Adds 3 keys and returns size', () => {
+		expect(tree.size()).toBe(0);
+	});
+});
+
+describe('Should return the correct size', () => {
 	it('Adds 3 keys and returns size', () => {
 		tree.insert('A');
 		tree.insert('B');
@@ -119,7 +129,8 @@ describe('Should return get correct size', () => {
 		expect(tree.size()).toBe(3);
 	});
 });
-describe('Should return get correct size on duplicate keys', () => {
+
+describe('Should return the correct size on duplicate keys', () => {
 	it('Adds 3 keys and returns size', () => {
 		tree.insert('A');
 		tree.insert('A');
@@ -128,7 +139,7 @@ describe('Should return get correct size on duplicate keys', () => {
 	});
 });
 
-describe('Should return get correct size on larger tree', () => {
+describe('Should return the correct size on larger tree', () => {
 	it('Adds 10 keys and returns size', () => {
 		const keys = ['S', 'E', 'A', 'R', 'C', 'H', 'X', 'M', 'P', 'L'];
 		keys.forEach((k) => tree.insert(k));
@@ -136,6 +147,7 @@ describe('Should return get correct size on larger tree', () => {
 	});
 });
 
+//------- search method test -------
 describe('Should find deeper elements in the tree', () => {
 	it('inserts 3 keys into the tree and gets size', () => {
 		tree.insert('A');
@@ -143,9 +155,9 @@ describe('Should find deeper elements in the tree', () => {
 		tree.insert('C');
 		//Search returns the node that contains the key
 		expect(tree.search('C')?.keys).toContain('C');
-		expect(tree.size()).toBe(3);
 	});
 });
+
 describe('Should find deeper elements in the tree', () => {
 	it('inserts alphabet into the tree and finds elements and also size', () => {
 		const keys = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
@@ -157,3 +169,14 @@ describe('Should find deeper elements in the tree', () => {
 		expect(tree.size()).toBe(26);
 	});
 });
+
+describe('Should return null on a key that does not exist', () => {
+	it('inserts alphabet into the tree and looks for elements that do not exist', () => {
+		const keys = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+		keys.forEach((k) => tree.insert(k));
+		expect(tree.search('123')).toBeNull();
+		expect(tree.search('a')).toBeNull();
+	});
+});
+
+//------- delete method test -------
