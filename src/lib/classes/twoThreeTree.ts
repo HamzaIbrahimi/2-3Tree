@@ -179,110 +179,207 @@ export default class TwoThreeTree {
 
 	delete(value: string): void {
 		if (!this.root) return;
+		if (!this.search(value)) return;
 
 		this.#deleteRecursive(this.root, value);
 
-		// If root became empty, collapse it
-		if (this.root.keys.length === 0 && !this.root.isLeaf()) {
+		// Remove root hole: only if root has 0 keys and exactly 1 child
+		// This is the "remove root hole" case from the PDF
+		if (this.root.keys.length === 0 && this.root.children.length === 1) {
 			this.root = this.root.children[0];
 		}
+
+		this.#size--;
 	}
 
 	#deleteRecursive(node: TreeNode, value: string): void {
+		// Terminal case: delete from leaf
 		if (node.isLeaf()) {
 			this.#deleteFromLeaf(node, value);
 			return;
 		}
 
-		// Find child to go down into
+		// Find which child to recurse into or handle key-in-node replacement
 		let idx: number;
 
 		if (node.is2Node()) {
 			const cmp = value.localeCompare(node.keys[0]);
-			if (cmp === 0) {
-				// delete key by replacing with inorder successor
-				node.keys[0] = this.#deleteReplaceWithSuccessor(node.children[1]);
-				return;
-			}
-			idx = cmp < 0 ? 0 : 1;
-		} else {
-			const [a, b] = node.keys;
-			if (value.localeCompare(a) === 0) {
-				node.keys[0] = this.#deleteReplaceWithSuccessor(node.children[1]);
-				return;
-			}
-			if (value.localeCompare(b) === 0) {
-				node.keys[1] = this.#deleteReplaceWithSuccessor(node.children[2]);
-				return;
-			}
 
-			if (value.localeCompare(a) < 0) idx = 0;
-			else if (value.localeCompare(b) < 0) idx = 1;
-			else idx = 2;
+			if (cmp === 0) {
+				// Key found in this 2-node (non-terminal)
+				// Replace with in-order predecessor value (non-destructive)
+				const pred = this.#getPredecessorValue(node.children[0]);
+				node.keys[0] = pred;
+
+				// Now delete that predecessor from the left subtree using the normal recursive deletion,
+				// which will create a hole somewhere in that subtree and will be fixed bottom-up.
+				idx = 0;
+				this.#deleteRecursive(node.children[idx], pred);
+			} else {
+				// Key not here, recurse down
+				idx = cmp < 0 ? 0 : 1;
+				this.#deleteRecursive(node.children[idx], value);
+			}
+		} else {
+			// 3-node
+			const [a, b] = node.keys;
+
+			if (value.localeCompare(a) === 0) {
+				// First key matches
+				// Replace with predecessor from left subtree (non-destructive)
+				const pred = this.#getPredecessorValue(node.children[0]);
+				node.keys[0] = pred;
+
+				idx = 0;
+				this.#deleteRecursive(node.children[idx], pred);
+			} else if (value.localeCompare(b) === 0) {
+				// Second key matches
+				// Replace with predecessor from middle subtree (non-destructive)
+				const pred = this.#getPredecessorValue(node.children[1]);
+				node.keys[1] = pred;
+
+				idx = 1;
+				this.#deleteRecursive(node.children[idx], pred);
+			} else {
+				// Key not here, recurse down
+				if (value.localeCompare(a) < 0) idx = 0;
+				else if (value.localeCompare(b) < 0) idx = 1;
+				else idx = 2;
+				this.#deleteRecursive(node.children[idx], value);
+			}
 		}
 
-		this.#deleteRecursive(node.children[idx], value);
-
+		// Upward phase: fix any hole created in the child
+		// Note: idx is set in all branches above where a child was operated on.
 		this.#fixUnderflow(node, idx);
 	}
 
-	#deleteReplaceWithSuccessor(node: TreeNode): string {
-		while (!node.isLeaf()) node = node.children[0];
-		const val = node.keys[0];
-		this.#deleteFromLeaf(node, val);
-		return val;
+	#getPredecessorValue(node: TreeNode): string {
+		// Return the in-order predecessor (rightmost value) WITHOUT deleting it.
+		let cur = node;
+		while (!cur.isLeaf()) {
+			cur = cur.children[cur.children.length - 1];
+		}
+		return cur.keys[cur.keys.length - 1];
 	}
 
+	// Kept your existing leaf deletion helper (unchanged)
 	#deleteFromLeaf(node: TreeNode, value: string): void {
 		const i = node.keys.findIndex((k) => k.localeCompare(value) === 0);
-		if (i !== -1) node.keys.splice(i, 1);
+		if (i !== -1) {
+			node.keys.splice(i, 1);
+		}
 	}
 
 	#fixUnderflow(node: TreeNode, idx: number): void {
 		const child = node.children[idx];
-		if (child.keys.length !== 0) return; // no underflow
 
-		// Borrow or merge
-		if (idx > 0 && node.children[idx - 1].keys.length === 2) {
-			// borrow from left
-			const left = node.children[idx - 1];
-			child.keys = [node.keys[idx - 1]];
-			node.keys[idx - 1] = left.keys.pop()!;
-			if (!left.isLeaf()) {
-				child.children.unshift(left.children.pop()!);
-			}
-		} else if (idx < node.children.length - 1 && node.children[idx + 1].keys.length === 2) {
-			// borrow from right
-			const right = node.children[idx + 1];
-			child.keys = [node.keys[idx]];
-			node.keys[idx] = right.keys.shift()!;
-			if (!right.isLeaf()) {
-				child.children.push(right.children.shift()!);
-			}
+		// No underflow if child still has keys
+		if (child.keys.length !== 0) return;
+
+		// Child is now a "hole node" - need to fix it
+		// Try to borrow from siblings, otherwise merge
+
+		const leftSibling = idx > 0 ? node.children[idx - 1] : null;
+		const rightSibling = idx < node.children.length - 1 ? node.children[idx + 1] : null;
+
+		// Case 2 & 4: Try to borrow from a 3-node sibling
+		if (leftSibling && leftSibling.keys.length === 2) {
+			// Borrow from left 3-node sibling
+			// PDF Case 2 (if parent is 2-node) or Case 4 (if parent is 3-node)
+			this.#borrowFromLeft(node, idx);
+		} else if (rightSibling && rightSibling.keys.length === 2) {
+			// Borrow from right 3-node sibling
+			this.#borrowFromRight(node, idx);
 		} else {
-			// merge
-			if (idx > 0) {
-				this.#mergeChildren(node, idx - 1);
+			// Case 1 & 3: Must merge with a 2-node sibling
+			// This will create a hole in the parent (or reduce parent keys)
+			if (leftSibling) {
+				this.#mergeWithLeft(node, idx);
 			} else {
-				this.#mergeChildren(node, idx);
+				this.#mergeWithRight(node, idx);
 			}
 		}
 	}
 
-	#mergeChildren(node: TreeNode, leftIdx: number): void {
-		const rightIdx = leftIdx + 1;
+	#borrowFromLeft(parent: TreeNode, holeIdx: number): void {
+		// PDF Case 2 or Case 4(a)
+		// Left sibling is a 3-node, borrow its rightmost key
 
-		const left = node.children[leftIdx];
-		const right = node.children[rightIdx];
+		const hole = parent.children[holeIdx];
+		const leftSib = parent.children[holeIdx - 1];
 
-		left.keys.push(node.keys[leftIdx]);
-		left.keys.push(...right.keys);
+		// Move parent key down to hole
+		hole.keys = [parent.keys[holeIdx - 1]];
 
-		if (!right.isLeaf()) {
-			left.children.push(...right.children);
+		// Move left sibling's rightmost key up to parent
+		parent.keys[holeIdx - 1] = leftSib.keys.pop()!;
+
+		// Move left sibling's rightmost child to hole's left
+		if (!leftSib.isLeaf()) {
+			hole.children.unshift(leftSib.children.pop()!);
+		}
+	}
+
+	#borrowFromRight(parent: TreeNode, holeIdx: number): void {
+		// PDF Case 2 or Case 4(b)
+		// Right sibling is a 3-node, borrow its leftmost key
+
+		const hole = parent.children[holeIdx];
+		const rightSib = parent.children[holeIdx + 1];
+
+		// Move parent key down to hole
+		hole.keys = [parent.keys[holeIdx]];
+
+		// Move right sibling's leftmost key up to parent
+		parent.keys[holeIdx] = rightSib.keys.shift()!;
+
+		// Move right sibling's leftmost child to hole's right
+		if (!rightSib.isLeaf()) {
+			hole.children.push(rightSib.children.shift()!);
+		}
+	}
+
+	#mergeWithLeft(parent: TreeNode, holeIdx: number): void {
+		// PDF Case 1 or Case 3
+		// Merge hole with left 2-node sibling
+
+		const leftSib = parent.children[holeIdx - 1];
+		const hole = parent.children[holeIdx];
+
+		// Bring parent key down and merge
+		leftSib.keys.push(parent.keys[holeIdx - 1]);
+
+		// Add hole's children to left sibling
+		if (!hole.isLeaf()) {
+			leftSib.children.push(...hole.children);
 		}
 
-		node.keys.splice(leftIdx, 1);
-		node.children.splice(rightIdx, 1);
+		// Remove the parent key and the hole node
+		parent.keys.splice(holeIdx - 1, 1);
+		parent.children.splice(holeIdx, 1);
+	}
+
+	#mergeWithRight(parent: TreeNode, holeIdx: number): void {
+		// PDF Case 1 or Case 3
+		// Merge hole with right 2-node sibling
+
+		const hole = parent.children[holeIdx];
+		const rightSib = parent.children[holeIdx + 1];
+
+		// Bring parent key down
+		const mergedKeys = [parent.keys[holeIdx]];
+		mergedKeys.push(...rightSib.keys);
+
+		// Merge children
+		const mergedChildren = [...hole.children, ...rightSib.children];
+
+		// Update right sibling to contain merged result
+		rightSib.keys = mergedKeys;
+		rightSib.children = mergedChildren;
+
+		// Remove parent key and hole node
+		parent.keys.splice(holeIdx, 1);
+		parent.children.splice(holeIdx, 1);
 	}
 }

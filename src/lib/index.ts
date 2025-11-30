@@ -3,7 +3,7 @@ import TwoThreeTree from './classes/twoThreeTree';
 import prettyPrint from './util/prettyPrint';
 
 const twoThreeTree = new TwoThreeTree();
-const alphabets = 'SEARCHXMPL'.split('');
+const alphabets = 'ALGORITHMS'.split('');
 for (const key of alphabets) {
 	twoThreeTree.insert(key);
 }

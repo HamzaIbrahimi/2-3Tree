@@ -2,9 +2,13 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import TwoThreeTree from '../twoThreeTree';
 
 let tree: TwoThreeTree;
+let algsTree: TwoThreeTree;
 
 beforeEach(() => {
 	tree = new TwoThreeTree();
+	algsTree = new TwoThreeTree();
+	const a = 'ALGORITHMS'.split('');
+	a.forEach((key) => algsTree.insert(key));
 });
 
 describe('Has root on initialization', () => {
@@ -180,3 +184,92 @@ describe('Should return null on a key that does not exist', () => {
 });
 
 //------- delete method test -------
+//Example from https://www.cs.princeton.edu/~dpw/courses/cos326-12/ass/2-3-trees.pdf
+/*
+│                   ┌──---- [T]
+
+│                   ┌──---- [R]
+
+│       ┌──---- [O | S]
+
+│       │           └──---- [L | M]
+
+└──---- [I]
+
+        │       ┌──---- [H]
+
+        └──---- [G]
+
+                └──---- [A]
+				*/
+//The point here is to delete ALGORITHMS from the algsTree one by one
+//And ensure the state of the tree matches that of the linked example
+describe('Deletes A from algsTree ', () => {
+	it('Deletes a leaf node with no children', () => {
+		algsTree.delete('A');
+		expect(algsTree.size()).toBe(9);
+		expect(algsTree.root?.keys[0]).toBe('O');
+		expect(algsTree.root?.children.map((k) => k.keys).flat()).toEqual(['I', 'S']);
+		const I = algsTree.search('I')!;
+		expect(I?.is2Node()).toBeTruthy();
+		expect(I.children.map((k) => k.keys).flat()).toEqual(['G', 'H', 'L', 'M']);
+		const S = algsTree.search('S')!;
+		expect(S.children.map((k) => k.keys).flat()).toEqual(['R', 'T']);
+	});
+});
+
+describe('Deletes AL from the algsTree', () => {
+	it('Deletes a leaf node with no children', () => {
+		algsTree.delete('A');
+		algsTree.delete('L');
+		expect(algsTree.size()).toBe(8);
+		expect(algsTree.root?.keys[0]).toBe('O');
+		expect(algsTree.root?.children.map((k) => k.keys).flat()).toEqual(['I', 'S']);
+		const I = algsTree.search('I')!;
+		expect(I?.is2Node()).toBeTruthy();
+		expect(I.children.map((k) => k.keys).flat()).toEqual(['G', 'H', 'M']);
+		const S = algsTree.search('S')!;
+		expect(S.children.map((k) => k.keys).flat()).toEqual(['R', 'T']);
+	});
+});
+
+describe('Deletes ALG from the algsTree', () => {
+	it('Deletes a leaf node with no children', () => {
+		algsTree.delete('A');
+		algsTree.delete('L');
+		algsTree.delete('G');
+		expect(algsTree.size()).toBe(7);
+		expect(algsTree.root?.keys[0]).toBe('O');
+		expect(algsTree.root?.children.map((k) => k.keys).flat()).toEqual(['I', 'S']);
+		const I = algsTree.search('I')!;
+		expect(I?.is2Node()).toBeTruthy();
+		expect(I.children.map((k) => k.keys).flat()).toEqual(['H', 'M']);
+		const S = algsTree.search('S')!;
+		expect(S.children.map((k) => k.keys).flat()).toEqual(['R', 'T']);
+	});
+});
+
+describe('Deletes ALGO from the algsTree', () => {
+	it('Deletes the root node which has two children', () => {
+		algsTree.delete('A');
+		algsTree.delete('L');
+		algsTree.delete('G');
+		algsTree.delete('O');
+		expect(algsTree.size()).toBe(6);
+		expect(algsTree.root!.keys).toEqual(['M', 'S']);
+		expect(algsTree.root!.children.map((k) => k.keys).flat()).toEqual(['H', 'I', 'R', 'T']);
+	});
+});
+
+describe('Deletes ALGOR from the algsTree', () => {
+	it('Deletes a leaf where the parent is a 3 node', () => {
+		algsTree.delete('A');
+		algsTree.delete('L');
+		algsTree.delete('G');
+		algsTree.delete('O');
+		algsTree.delete('R');
+		expect(algsTree.size()).toBe(5);
+		expect(algsTree.root!.keys).toEqual(['I', 'S']);
+		expect(algsTree.root!.children.map((k) => k.keys).flat()).toEqual(['H', 'M', 'T']);
+	});
+});
