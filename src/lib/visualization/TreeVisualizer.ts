@@ -564,7 +564,7 @@ export default class TreeVisualizer {
 						// Move text to front
 						const textNode = group.select('text').node();
 						if (textNode) {
-							group.node()?.appendChild(textNode);
+							(group.node() as SVGElement)?.appendChild(textNode as Node);
 						}
 					});
 
