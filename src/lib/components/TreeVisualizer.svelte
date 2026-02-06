@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import TwoThreeTree from '$lib/classes/TwoThreeTree';
+	import TwoThreeTree from '$lib/classes/twoThreeTree';
 	import TreeVisualizer from '$lib/visualization/TreeVisualizer';
 
 	// Props for parent component to control the tree
