@@ -13,10 +13,7 @@ const config = {
 			strict: false,
 		}),
 		paths: {
-			base: process.argv.includes('dev') ? '/2-3Tree' : '',
-		},
-		prerender: {
-			handleHttpError: 'warn',
+			base: process.argv.includes('dev') ? '' : '/2-3Tree',
 		},
 	},
 };
