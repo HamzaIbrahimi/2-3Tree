@@ -8,12 +8,13 @@ const config = {
 	preprocess: vitePreprocess(),
 
 	kit: {
+		// adapter-static is required for GitHub Pages
 		adapter: adapter({
-			fallback: '404.html',
-			strict: false,
+			fallback: '404.html', // Dependent on your needs, '404.html' is best for SPAs
 		}),
 		paths: {
-			base: process.argv.includes('dev') ? '' : '/2-3Tree',
+			// Replace '2-3Tree' with your repo name if it changes
+			base: process.env.NODE_ENV === 'production' ? '/2-3Tree' : '',
 		},
 	},
 };
