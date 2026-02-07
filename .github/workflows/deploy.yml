@@ -22,7 +22,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install Node.js
-        uses: ambassadors/setup-node@v4
+        uses: actions/setup-node@v4
         with:
           node-version: 22 # Matching closer to your v24
           cache: 'npm'
