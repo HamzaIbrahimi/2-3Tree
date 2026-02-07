@@ -151,6 +151,51 @@ describe('Should return the correct size on larger tree', () => {
 	});
 });
 
+describe('The size should be zero regardless of deletion order', () => {
+	it('Deletes in reverse order', () => {
+		tree.insert('A');
+		tree.insert('B');
+		tree.insert('C');
+		expect(tree.size()).toBe(3);
+
+		// Delete in REVERSE order
+		tree.delete('C');
+		tree.delete('B');
+		tree.delete('A');
+
+		expect(tree.size()).toBe(0);
+		expect(tree.root).toBe(null);
+	});
+
+	it('Deletes in random order', () => {
+		tree.insert('A');
+		tree.insert('B');
+		tree.insert('C');
+		expect(tree.size()).toBe(3);
+
+		// Delete middle first
+		tree.delete('B');
+		tree.delete('A');
+		tree.delete('C');
+
+		expect(tree.size()).toBe(0);
+		expect(tree.root).toBe(null);
+	});
+
+	it('Can insert after full deletion', () => {
+		tree.insert('A');
+		tree.delete('A');
+
+		expect(tree.size()).toBe(0);
+		expect(tree.root).toBe(null);
+
+		// This should work now
+		tree.insert('C');
+		expect(tree.size()).toBe(1);
+		expect(tree.search('C')).not.toBe(null);
+	});
+});
+
 //------- search method test -------
 describe('Should find deeper elements in the tree', () => {
 	it('inserts 3 keys into the tree and gets size', () => {
@@ -349,7 +394,6 @@ describe('Deletes ALGORITHMS from the algsTree', () => {
 		algsTree.delete('M');
 		algsTree.delete('S');
 		expect(algsTree.size()).toBe(0);
-		expect(algsTree.root!.keys).toEqual([]);
-		expect(algsTree.root?.children).toEqual([]);
+		expect(algsTree.root).toBe(null);
 	});
 });

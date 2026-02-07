@@ -29,7 +29,7 @@
 
 		tree.insert(value);
 		await visualizer.animateInsert(value);
-
+		console.log($state.snapshot(tree.size()));
 		if (onInsert) await onInsert(value);
 	}
 
@@ -49,7 +49,7 @@
 
 		tree.delete(value);
 		visualizer.draw(); // For now, just redraw (can add animation later)
-
+		console.log($state.snapshot(tree.size()));
 		if (onDelete) await onDelete(value);
 	}
 

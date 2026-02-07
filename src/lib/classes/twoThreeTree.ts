@@ -187,6 +187,8 @@ export default class TwoThreeTree {
 		// This is the "remove root hole" case from the PDF
 		if (this.root.keys.length === 0 && this.root.children.length === 1) {
 			this.root = this.root.children[0];
+		} else if (this.root.keys.length === 0 && this.root.isLeaf()) {
+			this.root = null;
 		}
 
 		this.#size--;
