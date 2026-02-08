@@ -1,7 +1,6 @@
-@import 'tailwindcss';
-
 :root {
 	font-family:
+		'Roboto',
 		system-ui,
 		-apple-system,
 		BlinkMacSystemFont,
@@ -13,4 +12,42 @@
 		'Open Sans',
 		'Helvetica Neue',
 		sans-serif;
+	/* Background Colors */
+	--bg-slate-100: #f1f5f9;
+	--bg-slate-50: #f8fafc;
+
+	/* Border Colors */
+	--border-light: #e2e8f0;
+	--border-medium: #cbd5e1;
+
+	/* Text Colors */
+	--text-primary: #1e293b;
+	--text-secondary: #64748b;
+	--text-tertiary: #94a3b8;
+	--text-muted: #475569;
+
+	/* Primary/Accent Colors */
+	--color-primary: #3b82f6;
+	--color-primary-dark: #1e40af;
+
+	/* Action Button Colors */
+	--color-insert: #22c55e;
+	--color-delete: #f97316;
+	--color-find: #3b82f6;
+
+	/* Status/Badge Background Colors */
+	--bg-success: #dcfce7;
+	--bg-error: #fee2e2;
+	--bg-warning: #ffedd5;
+
+	/* Status/Badge Text Colors */
+	--text-success: #16a34a;
+	--text-error: #dc2626;
+	--text-warning: #ea580c;
+
+	/* Mode Toggle */
+	--mode-active-bg: #3b82f6;
+	--mode-active-text: #ffffff;
+	--mode-inactive-bg: #f1f5f9;
+	--mode-inactive-text: #64748b;
 }
