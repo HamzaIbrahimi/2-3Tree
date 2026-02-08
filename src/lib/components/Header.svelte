@@ -1,22 +1,58 @@
 <script lang="ts">
-	import favicon from '$lib/assets/favicon.svg';
 	import { resolve } from '$app/paths';
 	const learn = resolve('/learn');
 	const about = resolve('/about');
 </script>
 
-<nav class="flex justify-between px-5 py-1">
+<nav class="">
 	<header>
-		<a href={resolve('/')} class="flex items-center justify-center gap-1">
-			<h1 class="text-m">2-3 Tree Visualizer</h1>
-			<figure>
-				<img src={favicon} alt="A tree that depicts the two three tree data structure" />
-			</figure>
+		<a href={resolve('/')}>
+			<h3 class="">2-3 Tree Visualizer</h3>
+			<div>Interactive data structure visualization</div>
 		</a>
 	</header>
-
-	<div class="flex items-center justify-center gap-3">
-		<a href={learn}>Learn</a>
-		<a href={about}>About</a>
+	<div>
+		<a class="link-btn" href={learn}>Learn</a>
+		<a class="link-btn" href={about}>About</a>
+		<a class="link-btn">Reset Tree</a>
 	</div>
 </nav>
+
+<style>
+	a {
+		text-decoration: none;
+		color: inherit;
+	}
+
+	nav {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		flex-wrap: wrap;
+		padding: 0.5rem 2rem;
+		color: var(--text-primary);
+	}
+
+	nav div {
+		display: flex;
+		gap: 2rem;
+	}
+
+	.link-btn {
+		border: 1px solid var(--border-medium);
+		background-color: var(--bg-slate-100);
+		padding: 0.3rem 2rem;
+		border-radius: 2vw;
+		font-size: 0.9rem;
+	}
+
+	.link-btn:hover {
+		text-decoration: underline;
+		flex-shrink: 0;
+	}
+
+	a div {
+		font-size: 0.8rem;
+		color: var(--text-secondary);
+	}
+</style>
