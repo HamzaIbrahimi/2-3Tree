@@ -62,10 +62,6 @@
 <!-- <Information /> -->
 
 <style>
-	.input-container {
-		border-top: 1px solid black;
-	}
-
 	input:invalid {
 		outline: 1px solid hsl(0, 100%, 59%);
 	}
