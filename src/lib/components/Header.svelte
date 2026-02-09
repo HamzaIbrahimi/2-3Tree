@@ -14,7 +14,6 @@
 	<div>
 		<a class="link-btn" href={learn}>Learn</a>
 		<a class="link-btn" href={about}>About</a>
-		<a class="link-btn">Reset Tree</a>
 	</div>
 </nav>
 
@@ -29,7 +28,7 @@
 		justify-content: space-between;
 		align-items: center;
 		flex-wrap: wrap;
-		padding: 0.5rem 2rem;
+		padding: 1rem 2rem;
 		color: var(--text-primary);
 		background-color: #fff;
 	}
@@ -37,6 +36,7 @@
 	nav div {
 		display: flex;
 		gap: 2rem;
+		margin-right: 2rem;
 	}
 
 	.link-btn {

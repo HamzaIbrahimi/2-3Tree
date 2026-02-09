@@ -50,6 +50,7 @@
 		display: flex;
 		flex-direction: column;
 		height: 100vh;
+		padding: 1rem 2rem;
 	}
 
 	.visualization-container {
