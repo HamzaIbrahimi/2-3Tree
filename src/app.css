@@ -51,3 +51,7 @@
 	--mode-inactive-bg: #f1f5f9;
 	--mode-inactive-text: #64748b;
 }
+
+body {
+	background-color: var(--bg-slate-100);
+}

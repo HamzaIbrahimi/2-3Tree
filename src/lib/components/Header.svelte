@@ -31,6 +31,7 @@
 		flex-wrap: wrap;
 		padding: 0.5rem 2rem;
 		color: var(--text-primary);
+		background-color: #fff;
 	}
 
 	nav div {
