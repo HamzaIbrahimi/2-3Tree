@@ -23,13 +23,13 @@ prettyPrint(tree23.root);
 Which gives us the following result:
 
 ```bash
-│               ┌──---- [S | X]
-│       ┌──---- [R]
-│       │       └──---- [P]
-└──---- [M]
-        │       ┌──---- [H | L]
-        └──---- [E]
-                └──---- [A | C]
+│               ┌──── [S | X]
+│       ┌──── [R]
+│       │       └──── [P]
+└──── [M]
+        │       ┌──── [H | L]
+        └──── [E]
+                └──── [A | C]
 ```
 
 This result confirms that the tree works correctly for insertion operations, but for clarity lets take another example.
@@ -50,14 +50,14 @@ prettyPrint(tree23.root);
 Which gives us the following result:
 
 ```bash
-│                   ┌──---- [S | X]
-│                   ┌──---- [P]
-│       ┌──---- [M | R]
-│       │           └──---- [L]
-└──---- [H]
-        │       ┌──---- [E]
-        └──---- [C]
-                └──---- [A]
+│                   ┌──── [S | X]
+│                   ┌──── [P]
+│       ┌──── [M | R]
+│       │           └──── [L]
+└──── [H]
+        │       ┌──── [E]
+        └──── [C]
+                └──── [A]
 ```
 
 Despite the pretty print output, it is perhaps still hard to clearly see how these operations take place, and this is where a visualization tool can come in very handy!

@@ -22,7 +22,7 @@ const prettyPrint = (node: TreeNode | null, prefix = '', isLeft = true): void =>
 
 	// Print node keys
 	const label = `[${node.keys.join(' | ')}]`;
-	console.log(`${prefix}${isLeft ? '└──---- ' : '┌──---- '}${label}`);
+	console.log(`${prefix}${isLeft ? '└──── ' : '┌──── '}${label}`);
 
 	// Print leftmost child (index 0)
 	if (node.children[0]) {
