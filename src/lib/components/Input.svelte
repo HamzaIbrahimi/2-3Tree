@@ -87,7 +87,7 @@
 			>
 			<button
 				disabled={isProcessing || !value.trim()}
-				onclick={() => () => handleButtonClick('Find')}
+				onclick={() => handleButtonClick('Find')}
 				class="find"
 			>
 				Find</button
