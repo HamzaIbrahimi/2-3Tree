@@ -51,7 +51,7 @@
 
 		tree.delete(value);
 		visualizer.draw(); // For now, just redraw (can add animation later)
-		console.log($state.snapshot(tree.size()));
+		size = tree.size();
 		if (onDelete) await onDelete(value);
 	}
 
@@ -91,7 +91,7 @@
 	button {
 		border: 1px solid var(--border-medium);
 		background-color: var(--bg-slate-100);
-		padding: 0.3rem 2rem;
+		padding: 0.3rem 0.9rem;
 		border-radius: 2vw;
 		font-size: 0.9rem;
 		cursor: pointer;
