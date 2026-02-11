@@ -6,7 +6,6 @@
 	import TreeVisualization from '$lib/components/TreeVisualizer.svelte';
 
 	let timeStamps = $state<Ops[]>([]);
-
 	let treeViz: TreeVisualization;
 
 	function addTimeStamp(operation: string, letter: string) {
@@ -87,6 +86,10 @@
 	}
 
 	.visualization-container {
+		background-color: #fff;
+		padding: 1rem;
 		overflow: hidden;
+		border-radius: 1rem;
+		border: 1px solid var(--border-light);
 	}
 </style>

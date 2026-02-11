@@ -33,7 +33,7 @@ export default class TreeVisualizer {
 			.append('svg')
 			.attr('width', '100%')
 			.attr('height', '100%')
-			.style('background', 'white');
+			.style('background', '#f8fafc');
 
 		// Create main group
 		this.g = this.svg.append('g');
