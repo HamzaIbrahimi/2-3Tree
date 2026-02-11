@@ -28,7 +28,7 @@
 		justify-content: space-between;
 		align-items: center;
 		flex-wrap: wrap;
-		padding: 1rem 2rem;
+		padding: 0.5rem 2rem;
 		color: var(--text-primary);
 		background-color: #fff;
 	}
