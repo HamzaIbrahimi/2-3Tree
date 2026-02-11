@@ -3,6 +3,8 @@ import TreeNode from './node';
 export default class TwoThreeTree {
 	root: TreeNode | null;
 	#size: number;
+	// Define options once for consistency
+	private readonly compareOptions = { numeric: true } as const;
 
 	constructor() {
 		this.root = null;
@@ -17,7 +19,7 @@ export default class TwoThreeTree {
 		if (!node) return null;
 
 		if (node.is2Node()) {
-			const cmp = value.localeCompare(node.keys[0]);
+			const cmp = value.localeCompare(node.keys[0], undefined, this.compareOptions);
 			if (cmp === 0) return node;
 			if (node.isLeaf()) return null;
 			return cmp < 0
@@ -27,8 +29,8 @@ export default class TwoThreeTree {
 
 		if (node.is3Node()) {
 			const [a, b] = node.keys;
-			const cmpA = value.localeCompare(a);
-			const cmpB = value.localeCompare(b);
+			const cmpA = value.localeCompare(a, undefined, this.compareOptions);
+			const cmpB = value.localeCompare(b, undefined, this.compareOptions);
 
 			if (cmpA === 0 || cmpB === 0) return node;
 			if (node.isLeaf()) return null;
@@ -60,7 +62,6 @@ export default class TwoThreeTree {
 
 		const result = this.#insertRecursive(this.root, value);
 		if (result && result.type === 'split') {
-			// root split, promote middle key into a new root
 			this.root = new TreeNode([result.key], [result.left, result.right]);
 		}
 		this.#size++;
@@ -70,29 +71,25 @@ export default class TwoThreeTree {
 		node: TreeNode,
 		value: string,
 	): { type: 'split'; key: string; left: TreeNode; right: TreeNode } | null {
-		// -- Leaf insert
 		if (node.isLeaf()) {
 			return this.#insertIntoLeaf(node, value);
 		}
 
-		// -- Internal node: pick the right child, recurse
 		let childIndex: number;
 
 		if (node.is2Node()) {
-			childIndex = value.localeCompare(node.keys[0]) < 0 ? 0 : 1;
+			childIndex = value.localeCompare(node.keys[0], undefined, this.compareOptions) < 0 ? 0 : 1;
 		} else {
 			const [a, b] = node.keys;
-			if (value.localeCompare(a) < 0) childIndex = 0;
-			else if (value.localeCompare(b) < 0) childIndex = 1;
+			if (value.localeCompare(a, undefined, this.compareOptions) < 0) childIndex = 0;
+			else if (value.localeCompare(b, undefined, this.compareOptions) < 0) childIndex = 1;
 			else childIndex = 2;
 		}
 
 		const res = this.#insertRecursive(node.children[childIndex], value);
 
-		// If nothing to do, return
 		if (!res || res.type !== 'split') return null;
 
-		// Handle child split inside this node
 		return this.#insertSplitToInternal(node, res.key, res.left, res.right);
 	}
 
@@ -100,7 +97,6 @@ export default class TwoThreeTree {
 		node: TreeNode,
 		value: string,
 	): { type: 'split'; key: string; left: TreeNode; right: TreeNode } | null {
-		// Insert into a leaf
 		if (node.is2Node()) {
 			node.keys = this.#sorted([node.keys[0], value]);
 			return null;
@@ -129,9 +125,8 @@ export default class TwoThreeTree {
 		rightChild: TreeNode,
 	): { type: 'split'; key: string; left: TreeNode; right: TreeNode } | null {
 		if (node.is2Node()) {
-			// Insert new key and child
 			const [k] = node.keys;
-			if (middleKey.localeCompare(k) < 0) {
+			if (middleKey.localeCompare(k, undefined, this.compareOptions) < 0) {
 				node.keys = [middleKey, k];
 				node.children = [leftChild, rightChild, node.children[1]];
 			} else {
@@ -141,16 +136,14 @@ export default class TwoThreeTree {
 			return null;
 		}
 
-		// 3-node split case
 		const [a, b] = node.keys;
 
 		let allKeys = [a, b, middleKey];
 		let allChildren: TreeNode[] = [];
 
-		// Merge children in correct order
-		if (middleKey.localeCompare(a) < 0) {
+		if (middleKey.localeCompare(a, undefined, this.compareOptions) < 0) {
 			allChildren = [leftChild, rightChild, node.children[1], node.children[2]];
-		} else if (middleKey.localeCompare(b) < 0) {
+		} else if (middleKey.localeCompare(b, undefined, this.compareOptions) < 0) {
 			allChildren = [node.children[0], leftChild, rightChild, node.children[2]];
 		} else {
 			allChildren = [node.children[0], node.children[1], leftChild, rightChild];
@@ -170,12 +163,10 @@ export default class TwoThreeTree {
 	}
 
 	#sorted(arr: string[]): string[] {
-		return arr.sort((a, b) => a.localeCompare(b));
+		return arr.sort((a, b) => a.localeCompare(b, undefined, this.compareOptions));
 	}
 
 	/* --------------------------- DELETE --------------------------- */
-	// Proper 2-3 tree delete is complicated but fully doable.
-	// This is the working, complete version.
 
 	delete(value: string): void {
 		if (!this.root) return;
@@ -183,8 +174,6 @@ export default class TwoThreeTree {
 
 		this.#deleteRecursive(this.root, value);
 
-		// Remove root hole: only if root has 0 keys and exactly 1 child
-		// This is the "remove root hole" case from the PDF
 		if (this.root.keys.length === 0 && this.root.children.length === 1) {
 			this.root = this.root.children[0];
 		} else if (this.root.keys.length === 0 && this.root.isLeaf()) {
@@ -195,69 +184,50 @@ export default class TwoThreeTree {
 	}
 
 	#deleteRecursive(node: TreeNode, value: string): void {
-		// Terminal case: delete from leaf
 		if (node.isLeaf()) {
 			this.#deleteFromLeaf(node, value);
 			return;
 		}
 
-		// Find which child to recurse into or handle key-in-node replacement
 		let idx: number;
 
 		if (node.is2Node()) {
-			const cmp = value.localeCompare(node.keys[0]);
+			const cmp = value.localeCompare(node.keys[0], undefined, this.compareOptions);
 
 			if (cmp === 0) {
-				// Key found in this 2-node (non-terminal)
-				// Replace with in-order predecessor value (non-destructive)
 				const pred = this.#getPredecessorValue(node.children[0]);
 				node.keys[0] = pred;
-
-				// Now delete that predecessor from the left subtree using the normal recursive deletion,
-				// which will create a hole somewhere in that subtree and will be fixed bottom-up.
 				idx = 0;
 				this.#deleteRecursive(node.children[idx], pred);
 			} else {
-				// Key not here, recurse down
 				idx = cmp < 0 ? 0 : 1;
 				this.#deleteRecursive(node.children[idx], value);
 			}
 		} else {
-			// 3-node
 			const [a, b] = node.keys;
 
-			if (value.localeCompare(a) === 0) {
-				// First key matches
-				// Replace with predecessor from left subtree (non-destructive)
+			if (value.localeCompare(a, undefined, this.compareOptions) === 0) {
 				const pred = this.#getPredecessorValue(node.children[0]);
 				node.keys[0] = pred;
-
 				idx = 0;
 				this.#deleteRecursive(node.children[idx], pred);
-			} else if (value.localeCompare(b) === 0) {
-				// Second key matches
-				// Replace with predecessor from middle subtree (non-destructive)
+			} else if (value.localeCompare(b, undefined, this.compareOptions) === 0) {
 				const pred = this.#getPredecessorValue(node.children[1]);
 				node.keys[1] = pred;
-
 				idx = 1;
 				this.#deleteRecursive(node.children[idx], pred);
 			} else {
-				// Key not here, recurse down
-				if (value.localeCompare(a) < 0) idx = 0;
-				else if (value.localeCompare(b) < 0) idx = 1;
+				if (value.localeCompare(a, undefined, this.compareOptions) < 0) idx = 0;
+				else if (value.localeCompare(b, undefined, this.compareOptions) < 0) idx = 1;
 				else idx = 2;
 				this.#deleteRecursive(node.children[idx], value);
 			}
 		}
 
-		// Upward phase: fix any hole created in the child
-		// Note: idx is set in all branches above where a child was operated on.
 		this.#fixUnderflow(node, idx);
 	}
 
 	#getPredecessorValue(node: TreeNode): string {
-		// Return the in-order predecessor (rightmost value) WITHOUT deleting it.
 		let cur = node;
 		while (!cur.isLeaf()) {
 			cur = cur.children[cur.children.length - 1];
@@ -265,13 +235,15 @@ export default class TwoThreeTree {
 		return cur.keys[cur.keys.length - 1];
 	}
 
-	// Kept your existing leaf deletion helper (unchanged)
 	#deleteFromLeaf(node: TreeNode, value: string): void {
-		const i = node.keys.findIndex((k) => k.localeCompare(value) === 0);
+		const i = node.keys.findIndex(
+			(k) => k.localeCompare(value, undefined, this.compareOptions) === 0,
+		);
 		if (i !== -1) {
 			node.keys.splice(i, 1);
 		}
 	}
+	// Kept your existing leaf deletion helper (unchanged)
 
 	#fixUnderflow(node: TreeNode, idx: number): void {
 		const child = node.children[idx];
