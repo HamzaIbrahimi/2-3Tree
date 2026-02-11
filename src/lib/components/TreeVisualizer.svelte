@@ -29,7 +29,6 @@
 
 		tree.insert(value);
 		await visualizer.animateInsert(value);
-		console.log($state.snapshot(tree.size()));
 		if (onInsert) await onInsert(value);
 	}
 
@@ -57,6 +56,7 @@
 		tree = new TwoThreeTree();
 		if (visualizer) {
 			visualizer.setTree(tree);
+			visualizer.draw();
 		}
 	}
 
@@ -75,6 +75,5 @@
 	.tree-canvas {
 		width: 100%;
 		height: 100%;
-		background: #0f172a;
 	}
 </style>
