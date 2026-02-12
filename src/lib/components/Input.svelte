@@ -65,6 +65,7 @@
 			bind:value
 			bind:this={inputRef}
 			required
+			inputmode={active ? 'text' : 'numeric'}
 			minlength="1"
 			placeholder={active
 				? 'Enter a letter or letters (eg A or A,B,C)'
