@@ -40,6 +40,10 @@
 		addTimeStamp('Delete', value);
 	}
 
+	function reset() {
+		treeViz.clear();
+	}
+
 	async function handleFind(value: string) {
 		if (!treeViz) return;
 
@@ -53,7 +57,7 @@
 </script>
 
 <div class="page-container">
-	<Input insertInto={handleInsert} deleteFrom={handleDelete} findFrom={handleFind} />
+	<Input insertInto={handleInsert} deleteFrom={handleDelete} findFrom={handleFind} {reset} />
 	<History opsHistory={timeStamps} />
 	<div class="visualization-container">
 		<TreeVisualization bind:this={treeViz} />

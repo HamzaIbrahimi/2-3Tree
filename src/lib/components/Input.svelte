@@ -8,8 +8,22 @@
 		insertInto?: (value: string) => Promise<void>;
 		deleteFrom?: (value: string) => Promise<void>;
 		findFrom?: (value: string) => void;
+		reset?: () => void;
 	}
-	let { insertInto, deleteFrom, findFrom }: Props = $props();
+
+	let { insertInto, deleteFrom, findFrom, reset }: Props = $props();
+
+	function resetTreeOnModeSwitch() {
+		if (active && reset) {
+			active = false;
+			reset();
+			return;
+		} else if (!active && reset) {
+			active = true;
+			reset();
+			return;
+		}
+	}
 
 	async function handleButtonClick(action: string) {
 		if (!inputRef.checkValidity()) {
@@ -45,11 +59,18 @@
 	<div class="mode">
 		<div class="title">Mode <span>changing modes will clear the tree</span></div>
 		<div class="form-buttons">
-			<button class={active ? 'active' : 'inactive'} onclick={() => (active = true)}>
+			<button
+				class={active ? 'active' : 'inactive'}
+				onclick={() => resetTreeOnModeSwitch()}
+				disabled={active}
+			>
 				Alphabet</button
 			>
-			<button class={active ? 'inactive' : 'active'} onclick={() => (active = false)}
-				>Numbers</button
+
+			<button
+				class={active ? 'inactive' : 'active'}
+				onclick={() => resetTreeOnModeSwitch()}
+				disabled={!active}>Numbers</button
 			>
 		</div>
 		{#if active}
