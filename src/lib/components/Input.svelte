@@ -60,6 +60,7 @@
 		<div class="title">Mode <span>changing modes will clear the tree</span></div>
 		<div class="form-buttons">
 			<button
+				type="button"
 				class={active ? 'active' : 'inactive'}
 				onclick={() => resetTreeOnModeSwitch()}
 				disabled={active}
@@ -68,6 +69,7 @@
 			>
 
 			<button
+				type="button"
 				class={active ? 'inactive' : 'active'}
 				onclick={() => resetTreeOnModeSwitch()}
 				disabled={!active}>Numbers</button
@@ -135,10 +137,10 @@
 	}
 
 	.mode {
-		padding: 1rem 1rem 0;
+		padding: 1rem 1rem;
 	}
 	.operation {
-		padding: 1rem 1rem 0;
+		padding: 1rem 1rem;
 	}
 
 	.title {
