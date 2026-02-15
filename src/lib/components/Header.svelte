@@ -12,8 +12,8 @@
 		</a>
 	</header>
 	<div>
-		<a class="link-btn" href={learn}>Learn</a>
-		<a class="link-btn" href={about}>About</a>
+		<!-- <a class="link-btn" href={learn}>Learn</a> -->
+		<!-- <a class="link-btn" href={about}>About</a> -->
 	</div>
 </nav>
 
