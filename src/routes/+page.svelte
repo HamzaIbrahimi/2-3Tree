@@ -46,13 +46,8 @@
 
 	async function handleFind(value: string) {
 		if (!treeViz) return;
-
 		const found = await treeViz.animateSearch(value);
 		addTimeStamp('Find', value);
-		// Optional: show alert after animation
-		setTimeout(() => {
-			alert(found ? `Found '${value}' in the tree!` : `'${value}' not found in the tree.`);
-		}, 100);
 	}
 </script>
 
