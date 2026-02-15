@@ -20,7 +20,7 @@ export default class TreeVisualizer {
 	private pillHeight = 36;
 	private levelHeight = 80;
 	private minHorizontalSpacing = 60;
-	private padding = 30;
+	private padding = 40; // Increased base padding
 
 	constructor(container: HTMLElement, tree: TwoThreeTree) {
 		this.tree = tree;
@@ -39,6 +39,24 @@ export default class TreeVisualizer {
 		this.g = this.svg.append('g');
 	}
 
+	// Helper to calculate node dimensions based on content
+	private getNodeDimensions(node: TreeNode): { width: number; height: number; radius: number } {
+		const keyText = node.keys.join(' ');
+		// Rough estimate: ~8px per character for bold serif font
+		const estimatedWidth = Math.max(keyText.length * 8, 30);
+
+		if (node.is2Node()) {
+			// For circles, use radius that accommodates text
+			const radius = Math.max(this.nodeRadius, estimatedWidth / 2 + 8);
+			return { width: radius * 2, height: radius * 2, radius };
+		} else {
+			// For ellipses (pills), expand width to fit text
+			const width = Math.max(this.pillWidth, estimatedWidth + 20);
+			const height = this.pillHeight;
+			return { width, height, radius: 0 };
+		}
+	}
+
 	// Calculate positions using a proper tree layout algorithm
 	private calculateLayout(): {
 		nodes: VisualNode[];
@@ -46,29 +64,24 @@ export default class TreeVisualizer {
 	} {
 		if (!this.tree.root) return { nodes: [], bounds: { minX: 0, maxX: 0, maxY: 0 } };
 
-		// Adjust spacing based on tree size
+		// Adjust spacing based on tree size (extremely conservative - prioritize readability)
 		const treeSize = this.tree.size();
-		if (treeSize > 20) {
-			this.minHorizontalSpacing = 30;
-			this.levelHeight = 60;
-			this.nodeRadius = 16;
-			this.pillWidth = 48;
-			this.pillHeight = 32;
-		} else if (treeSize > 15) {
-			this.minHorizontalSpacing = 35;
-			this.levelHeight = 65;
-			this.nodeRadius = 17;
-			this.pillWidth = 52;
-			this.pillHeight = 34;
-		} else if (treeSize > 10) {
-			this.minHorizontalSpacing = 45;
-			this.levelHeight = 70;
+		if (treeSize > 80) {
+			this.minHorizontalSpacing = 50;
+			this.levelHeight = 75;
+			this.nodeRadius = 17.5;
+			this.pillWidth = 54;
+			this.pillHeight = 35.5;
+		} else if (treeSize > 60) {
+			this.minHorizontalSpacing = 55;
+			this.levelHeight = 78;
 			this.nodeRadius = 18;
 			this.pillWidth = 55;
 			this.pillHeight = 36;
 		} else {
-			this.minHorizontalSpacing = 55;
-			this.levelHeight = 75;
+			// Keep full size for trees up to 60 nodes
+			this.minHorizontalSpacing = 60;
+			this.levelHeight = 80;
 			this.nodeRadius = 18;
 			this.pillWidth = 55;
 			this.pillHeight = 36;
@@ -85,23 +98,27 @@ export default class TreeVisualizer {
 		const startX = rootWidth / 2 + this.padding;
 		this.positionNode(this.tree.root, startX, this.padding, 0, visualNodes, subtreeWidths);
 
-		// Calculate bounds
+		// Calculate bounds with dynamic padding based on content
 		let minX = Infinity;
 		let maxX = -Infinity;
 		let maxY = -Infinity;
 
 		visualNodes.forEach((vn) => {
-			const nodeWidth = vn.node.is3Node() ? this.pillWidth / 2 + 5 : this.nodeRadius + 5;
-			minX = Math.min(minX, vn.x - nodeWidth);
-			maxX = Math.max(maxX, vn.x + nodeWidth);
-			maxY = Math.max(maxY, vn.y + this.nodeRadius);
+			const dims = this.getNodeDimensions(vn.node);
+			const halfWidth = vn.node.is3Node() ? dims.width / 2 : dims.radius;
+			minX = Math.min(minX, vn.x - halfWidth);
+			maxX = Math.max(maxX, vn.x + halfWidth);
+			maxY = Math.max(maxY, vn.y + (vn.node.is3Node() ? dims.height / 2 : dims.radius));
 		});
+
+		// Add extra padding for large numbers
+		const extraPadding = this.padding * 1.5;
 
 		return {
 			nodes: visualNodes,
 			bounds: {
-				minX: minX - this.padding,
-				maxX: maxX + this.padding,
+				minX: minX - extraPadding,
+				maxX: maxX + extraPadding,
 				maxY: maxY + this.padding,
 			},
 		};
@@ -217,12 +234,13 @@ export default class TreeVisualizer {
 
 				if (d.source.node.is3Node()) {
 					// For ellipse, calculate edge point
-					const rx = this.pillWidth / 2;
-					const ry = this.pillHeight / 2;
+					const dims = this.getNodeDimensions(d.source.node);
+					const rx = dims.width / 2;
 					return d.source.x + rx * Math.cos(angle);
 				} else {
 					// For circle
-					return d.source.x + this.nodeRadius * Math.cos(angle);
+					const dims = this.getNodeDimensions(d.source.node);
+					return d.source.x + dims.radius * Math.cos(angle);
 				}
 			})
 			.attr('y1', (d) => {
@@ -231,10 +249,12 @@ export default class TreeVisualizer {
 				const angle = Math.atan2(dy, dx);
 
 				if (d.source.node.is3Node()) {
-					const ry = this.pillHeight / 2;
+					const dims = this.getNodeDimensions(d.source.node);
+					const ry = dims.height / 2;
 					return d.source.y + ry * Math.sin(angle);
 				} else {
-					return d.source.y + this.nodeRadius * Math.sin(angle);
+					const dims = this.getNodeDimensions(d.source.node);
+					return d.source.y + dims.radius * Math.sin(angle);
 				}
 			})
 			.attr('x2', (d) => {
@@ -244,10 +264,12 @@ export default class TreeVisualizer {
 				const angle = Math.atan2(dy, dx);
 
 				if (d.target.node.is3Node()) {
-					const rx = this.pillWidth / 2;
+					const dims = this.getNodeDimensions(d.target.node);
+					const rx = dims.width / 2;
 					return d.target.x + rx * Math.cos(angle);
 				} else {
-					return d.target.x + this.nodeRadius * Math.cos(angle);
+					const dims = this.getNodeDimensions(d.target.node);
+					return d.target.x + dims.radius * Math.cos(angle);
 				}
 			})
 			.attr('y2', (d) => {
@@ -256,10 +278,12 @@ export default class TreeVisualizer {
 				const angle = Math.atan2(dy, dx);
 
 				if (d.target.node.is3Node()) {
-					const ry = this.pillHeight / 2;
+					const dims = this.getNodeDimensions(d.target.node);
+					const ry = dims.height / 2;
 					return d.target.y + ry * Math.sin(angle);
 				} else {
-					return d.target.y + this.nodeRadius * Math.sin(angle);
+					const dims = this.getNodeDimensions(d.target.node);
+					return d.target.y + dims.radius * Math.sin(angle);
 				}
 			})
 			.attr('stroke', 'black')
@@ -278,12 +302,13 @@ export default class TreeVisualizer {
 		// Draw shapes based on node type
 		nodeGroups.each(function (d) {
 			const group = d3.select(this);
+			const dims = that.getNodeDimensions(d.node);
 
 			if (d.node.is2Node()) {
 				// Single circle for 2-node
 				group
 					.append('circle')
-					.attr('r', that.nodeRadius)
+					.attr('r', dims.radius)
 					.attr('fill', 'white')
 					.attr('stroke', 'black')
 					.attr('stroke-width', 2);
@@ -293,8 +318,8 @@ export default class TreeVisualizer {
 					.append('ellipse')
 					.attr('cx', 0)
 					.attr('cy', 0)
-					.attr('rx', that.pillWidth / 2)
-					.attr('ry', that.pillHeight / 2)
+					.attr('rx', dims.width / 2)
+					.attr('ry', dims.height / 2)
 					.attr('fill', 'white')
 					.attr('stroke', 'black')
 					.attr('stroke-width', 2);
@@ -378,10 +403,12 @@ export default class TreeVisualizer {
 									const dy = d.target.y - d.source.y;
 									const angle = Math.atan2(dy, dx);
 									if (d.source.node.is3Node()) {
-										const rx = this.pillWidth / 2;
+										const dims = this.getNodeDimensions(d.source.node);
+										const rx = dims.width / 2;
 										return d.source.x + rx * Math.cos(angle);
 									} else {
-										return d.source.x + this.nodeRadius * Math.cos(angle);
+										const dims = this.getNodeDimensions(d.source.node);
+										return d.source.x + dims.radius * Math.cos(angle);
 									}
 								})
 								.attr('y1', (d) => {
@@ -389,10 +416,12 @@ export default class TreeVisualizer {
 									const dy = d.target.y - d.source.y;
 									const angle = Math.atan2(dy, dx);
 									if (d.source.node.is3Node()) {
-										const ry = this.pillHeight / 2;
+										const dims = this.getNodeDimensions(d.source.node);
+										const ry = dims.height / 2;
 										return d.source.y + ry * Math.sin(angle);
 									} else {
-										return d.source.y + this.nodeRadius * Math.sin(angle);
+										const dims = this.getNodeDimensions(d.source.node);
+										return d.source.y + dims.radius * Math.sin(angle);
 									}
 								})
 								.attr('x2', (d) => {
@@ -400,10 +429,12 @@ export default class TreeVisualizer {
 									const dy = d.source.y - d.target.y;
 									const angle = Math.atan2(dy, dx);
 									if (d.target.node.is3Node()) {
-										const rx = this.pillWidth / 2;
+										const dims = this.getNodeDimensions(d.target.node);
+										const rx = dims.width / 2;
 										return d.target.x + rx * Math.cos(angle);
 									} else {
-										return d.target.x + this.nodeRadius * Math.cos(angle);
+										const dims = this.getNodeDimensions(d.target.node);
+										return d.target.x + dims.radius * Math.cos(angle);
 									}
 								})
 								.attr('y2', (d) => {
@@ -411,10 +442,12 @@ export default class TreeVisualizer {
 									const dy = d.source.y - d.target.y;
 									const angle = Math.atan2(dy, dx);
 									if (d.target.node.is3Node()) {
-										const ry = this.pillHeight / 2;
+										const dims = this.getNodeDimensions(d.target.node);
+										const ry = dims.height / 2;
 										return d.target.y + ry * Math.sin(angle);
 									} else {
-										return d.target.y + this.nodeRadius * Math.sin(angle);
+										const dims = this.getNodeDimensions(d.target.node);
+										return d.target.y + dims.radius * Math.sin(angle);
 									}
 								}),
 						),
@@ -428,10 +461,12 @@ export default class TreeVisualizer {
 								const dy = d.target.y - d.source.y;
 								const angle = Math.atan2(dy, dx);
 								if (d.source.node.is3Node()) {
-									const rx = this.pillWidth / 2;
+									const dims = this.getNodeDimensions(d.source.node);
+									const rx = dims.width / 2;
 									return d.source.x + rx * Math.cos(angle);
 								} else {
-									return d.source.x + this.nodeRadius * Math.cos(angle);
+									const dims = this.getNodeDimensions(d.source.node);
+									return d.source.x + dims.radius * Math.cos(angle);
 								}
 							})
 							.attr('y1', (d) => {
@@ -439,10 +474,12 @@ export default class TreeVisualizer {
 								const dy = d.target.y - d.source.y;
 								const angle = Math.atan2(dy, dx);
 								if (d.source.node.is3Node()) {
-									const ry = this.pillHeight / 2;
+									const dims = this.getNodeDimensions(d.source.node);
+									const ry = dims.height / 2;
 									return d.source.y + ry * Math.sin(angle);
 								} else {
-									return d.source.y + this.nodeRadius * Math.sin(angle);
+									const dims = this.getNodeDimensions(d.source.node);
+									return d.source.y + dims.radius * Math.sin(angle);
 								}
 							})
 							.attr('x2', (d) => {
@@ -450,10 +487,12 @@ export default class TreeVisualizer {
 								const dy = d.source.y - d.target.y;
 								const angle = Math.atan2(dy, dx);
 								if (d.target.node.is3Node()) {
-									const rx = this.pillWidth / 2;
+									const dims = this.getNodeDimensions(d.target.node);
+									const rx = dims.width / 2;
 									return d.target.x + rx * Math.cos(angle);
 								} else {
-									return d.target.x + this.nodeRadius * Math.cos(angle);
+									const dims = this.getNodeDimensions(d.target.node);
+									return d.target.x + dims.radius * Math.cos(angle);
 								}
 							})
 							.attr('y2', (d) => {
@@ -461,10 +500,12 @@ export default class TreeVisualizer {
 								const dy = d.source.y - d.target.y;
 								const angle = Math.atan2(dy, dx);
 								if (d.target.node.is3Node()) {
-									const ry = this.pillHeight / 2;
+									const dims = this.getNodeDimensions(d.target.node);
+									const ry = dims.height / 2;
 									return d.target.y + ry * Math.sin(angle);
 								} else {
-									return d.target.y + this.nodeRadius * Math.sin(angle);
+									const dims = this.getNodeDimensions(d.target.node);
+									return d.target.y + dims.radius * Math.sin(angle);
 								}
 							}),
 					),
@@ -489,21 +530,23 @@ export default class TreeVisualizer {
 					// Add shape based on node type
 					g.each(function (d) {
 						const group = d3.select(this);
+						const dims = that.getNodeDimensions(d.node);
+
 						if (d.node.is2Node()) {
 							group
 								.append('circle')
-								.attr('r', 20)
+								.attr('r', dims.radius)
 								.attr('fill', 'white')
 								.attr('stroke', 'black')
 								.attr('stroke-width', 2);
 						} else {
+							// Use ellipse for 3-nodes (consistent with drawNodes)
 							group
-								.append('rect')
-								.attr('x', -25)
-								.attr('y', -20)
-								.attr('width', 50)
-								.attr('height', 40)
-								.attr('rx', 20)
+								.append('ellipse')
+								.attr('cx', 0)
+								.attr('cy', 0)
+								.attr('rx', dims.width / 2)
+								.attr('ry', dims.height / 2)
 								.attr('fill', 'white')
 								.attr('stroke', 'black')
 								.attr('stroke-width', 2);
@@ -515,7 +558,7 @@ export default class TreeVisualizer {
 						.attr('text-anchor', 'middle')
 						.attr('dominant-baseline', 'middle')
 						.attr('fill', 'black')
-						.attr('font-size', '14px')
+						.attr('font-size', '13px')
 						.attr('font-weight', 'bold')
 						.attr('font-family', 'serif')
 						.text((d) => d.node.keys.join(' '));
@@ -536,26 +579,27 @@ export default class TreeVisualizer {
 					// Update shapes
 					update.each(function (d) {
 						const group = d3.select(this);
+						const dims = that.getNodeDimensions(d.node);
 
 						// Remove old shape
-						group.select('circle, rect').remove();
+						group.select('circle, ellipse').remove();
 
 						// Add new shape
 						if (d.node.is2Node()) {
 							group
 								.append('circle')
-								.attr('r', 20)
+								.attr('r', dims.radius)
 								.attr('fill', 'white')
 								.attr('stroke', 'black')
 								.attr('stroke-width', 2);
 						} else {
+							// Use ellipse for 3-nodes (consistent with drawNodes)
 							group
-								.append('rect')
-								.attr('x', -25)
-								.attr('y', -20)
-								.attr('width', 50)
-								.attr('height', 40)
-								.attr('rx', 20)
+								.append('ellipse')
+								.attr('cx', 0)
+								.attr('cy', 0)
+								.attr('rx', dims.width / 2)
+								.attr('ry', dims.height / 2)
 								.attr('fill', 'white')
 								.attr('stroke', 'black')
 								.attr('stroke-width', 2);
@@ -611,13 +655,13 @@ export default class TreeVisualizer {
 			}
 
 			if (currentNode.is2Node()) {
-				const cmp = value.localeCompare(currentNode.keys[0]);
+				const cmp = value.localeCompare(currentNode.keys[0], undefined, { numeric: true });
 				currentNode = cmp < 0 ? currentNode.children[0] : currentNode.children[1];
 			} else {
 				const [a, b] = currentNode.keys;
-				if (value.localeCompare(a) < 0) {
+				if (value.localeCompare(a, undefined, { numeric: true }) < 0) {
 					currentNode = currentNode.children[0];
-				} else if (value.localeCompare(b) < 0) {
+				} else if (value.localeCompare(b, undefined, { numeric: true }) < 0) {
 					currentNode = currentNode.children[1];
 				} else {
 					currentNode = currentNode.children[2];
@@ -678,12 +722,13 @@ export default class TreeVisualizer {
 		const shape = nodeGroup.select('circle, ellipse');
 		const text = nodeGroup.select('text');
 		const isCircle = vNode.node.is2Node();
+		const dims = this.getNodeDimensions(vNode.node);
 
 		// Pulse and wiggle animation
 		await new Promise((resolve) => {
 			// For circles, use r attribute; for ellipses, use rx/ry
 			if (isCircle) {
-				const originalR = this.nodeRadius;
+				const originalR = dims.radius;
 				shape
 					.transition()
 					.duration(200)
@@ -705,8 +750,8 @@ export default class TreeVisualizer {
 					.attr('stroke-width', 2)
 					.on('end', resolve);
 			} else {
-				const originalRx = this.pillWidth / 2;
-				const originalRy = this.pillHeight / 2;
+				const originalRx = dims.width / 2;
+				const originalRy = dims.height / 2;
 				shape
 					.transition()
 					.duration(200)
