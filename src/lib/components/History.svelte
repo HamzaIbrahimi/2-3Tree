@@ -32,7 +32,7 @@
 		flex-direction: column;
 		row-gap: 1rem;
 		padding: 1rem 1rem;
-		max-width: 300px;
+		min-width: 100%;
 		background-color: #fff;
 		border-radius: 1rem;
 	}

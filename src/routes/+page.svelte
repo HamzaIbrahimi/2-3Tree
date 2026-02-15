@@ -91,4 +91,39 @@
 		border-radius: 1rem;
 		border: 1px solid var(--border-light);
 	}
+
+	@media (max-width: 800px) {
+		.page-container {
+			grid-template-columns: 1fr 3fr;
+			column-gap: 1rem;
+		}
+	}
+
+	@media (max-width: 650px) {
+		.page-container {
+			grid-template-columns: 1fr;
+			grid-template-rows: 200px 1fr 200px;
+			padding: 0;
+		}
+
+		.page-container > *:nth-child(1) {
+			grid-column: 1/-1;
+			grid-row: 1/2;
+		}
+
+		.page-container > *:nth-child(2) {
+			grid-column: 1/-1;
+			grid-row: 3/4;
+		}
+
+		.page-container > *:nth-child(3) {
+			grid-column: 1/-1;
+			grid-row: 2/3;
+		}
+		.visualization-container {
+			padding: 0;
+			border: 0;
+			border-color: var(--bg-slate-100);
+		}
+	}
 </style>

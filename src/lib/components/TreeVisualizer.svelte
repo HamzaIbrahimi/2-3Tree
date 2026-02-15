@@ -123,4 +123,10 @@
 	.clear {
 		left: 0;
 	}
+
+	@media (max-width: 650px) {
+		.tree-canvas {
+			border: none;
+		}
+	}
 </style>

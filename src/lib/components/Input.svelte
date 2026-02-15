@@ -48,7 +48,7 @@
 					findFrom(item);
 				}
 			}
-			value = ''; // Clear input after action
+			value = '';
 		} finally {
 			isProcessing = false;
 		}
@@ -203,7 +203,7 @@
 	input {
 		border: 1px solid var(--border-light);
 		border-radius: 1rem;
-		padding: 0.8rem 1rem;
+		padding: 0.5rem 1rem;
 	}
 
 	input::placeholder {
@@ -215,5 +215,50 @@
 	input:valid {
 		outline: 1px solid hsl(120, 70%, 50%);
 		background: hsl(120);
+	}
+
+	@media (max-width: 650px) {
+		form {
+			align-content: center;
+			justify-content: stretch;
+			gap: 10px;
+			width: 100%;
+			background-color: #fff;
+			padding: 1rem;
+			margin-top: 1rem;
+		}
+
+		.form-buttons > button {
+			padding-inline: 3.8rem;
+		}
+
+		.operation-buttons {
+			width: 100%;
+		}
+
+		.operation,
+		.mode {
+			border-radius: 0;
+			gap: 0;
+			padding: 0;
+			max-width: 100%;
+		}
+
+		.operation {
+			gap: 10px;
+		}
+
+		p,
+		span {
+			display: none;
+		}
+
+		.operation .title {
+			display: none;
+		}
+
+		.mode .title {
+			color: var(--text-tertiary);
+		}
 	}
 </style>
