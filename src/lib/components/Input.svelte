@@ -260,5 +260,12 @@
 		.mode .title {
 			color: var(--text-tertiary);
 		}
+
+		@media (min-width: 1200px) {
+			.operation,
+			.mode {
+				min-width: 100%;
+			}
+		}
 	}
 </style>
