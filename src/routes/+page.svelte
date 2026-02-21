@@ -10,7 +10,7 @@
 
 	function addTimeStamp(operation: string, letter: string) {
 		let date = new SvelteDate();
-		if (timeStamps.length === 3) {
+		if (timeStamps.length === 4) {
 			timeStamps.pop();
 		}
 		timeStamps.unshift({ operation, letter, date });
@@ -63,7 +63,7 @@
 	.page-container {
 		display: grid;
 		grid-template-columns: 1fr 3fr;
-		grid-template-rows: auto auto auto;
+		grid-template-rows: 0.5fr auto;
 		column-gap: 1rem;
 		row-gap: 1rem;
 		height: 100vh;
@@ -92,17 +92,10 @@
 		border: 1px solid var(--border-light);
 	}
 
-	@media (max-width: 800px) {
-		.page-container {
-			grid-template-columns: 1fr 3fr;
-			column-gap: 1rem;
-		}
-	}
-
 	@media (max-width: 650px) {
 		.page-container {
 			grid-template-columns: 1fr;
-			grid-template-rows: 200px 1fr 200px;
+			grid-template-rows: 200px 400px 220px;
 			padding: 0;
 		}
 

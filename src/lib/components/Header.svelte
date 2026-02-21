@@ -28,7 +28,7 @@
 		justify-content: space-between;
 		align-items: center;
 		flex-wrap: wrap;
-		padding: 0.5rem 2rem;
+		padding: 0.5rem 2.5rem;
 		color: var(--text-primary);
 		background-color: #fff;
 	}
@@ -55,5 +55,11 @@
 	a div {
 		font-size: 0.8rem;
 		color: var(--text-secondary);
+	}
+
+	@media (max-width: 650px) {
+		nav {
+			padding: 0.5rem 1rem;
+		}
 	}
 </style>

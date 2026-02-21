@@ -132,7 +132,6 @@
 		flex-direction: column;
 		gap: 0.5rem;
 		background-color: #fff;
-		max-width: 300px;
 		border-radius: 1rem;
 	}
 
@@ -248,8 +247,7 @@
 			gap: 10px;
 		}
 
-		p,
-		span {
+		p {
 			display: none;
 		}
 
@@ -259,13 +257,6 @@
 
 		.mode .title {
 			color: var(--text-tertiary);
-		}
-
-		@media (min-width: 1200px) {
-			.operation,
-			.mode {
-				min-width: 100%;
-			}
 		}
 	}
 </style>
