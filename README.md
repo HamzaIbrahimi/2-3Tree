@@ -1,5 +1,7 @@
 # An educational 2-3 tree visualizer
 
+Live link -> [2-3 tree visualizer](https://hamzaibrahimi.github.io/2-3Tree/)
+
 ## Correctness
 
 Since it can be difficult to visually see what's going on a in a 2-3 tree, a pretty print function helps immensely (See [prettyPrint.ts](./src/lib/util/prettyPrint.ts)).
