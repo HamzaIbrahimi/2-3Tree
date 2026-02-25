@@ -35,6 +35,7 @@
 		min-width: 100%;
 		background-color: #fff;
 		border-radius: 1rem;
+		overflow: scroll;
 	}
 
 	.ops-container {

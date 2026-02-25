@@ -10,9 +10,6 @@
 
 	function addTimeStamp(operation: string, letter: string) {
 		let date = new SvelteDate();
-		if (timeStamps.length === 4) {
-			timeStamps.pop();
-		}
 		timeStamps.unshift({ operation, letter, date });
 	}
 
