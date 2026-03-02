@@ -11,10 +11,10 @@
 			<div>Interactive data structure visualization</div>
 		</a>
 	</header>
-	<div>
-		<!-- <a class="link-btn" href={learn}>Learn</a> -->
-		<!-- <a class="link-btn" href={about}>About</a> -->
-	</div>
+	<!-- <div>
+		<a class="link-btn" href={learn}>Learn</a>
+		<a class="link-btn" href={about}>About</a>
+	</div> -->
 </nav>
 
 <style>
@@ -39,7 +39,7 @@
 		margin-right: 2rem;
 	}
 
-	.link-btn {
+	/* .link-btn {
 		border: 1px solid var(--border-medium);
 		background-color: var(--bg-slate-100);
 		padding: 0.3rem 2rem;
@@ -50,7 +50,7 @@
 	.link-btn:hover {
 		text-decoration: underline;
 		flex-shrink: 0;
-	}
+	} */
 
 	a div {
 		font-size: 0.8rem;
