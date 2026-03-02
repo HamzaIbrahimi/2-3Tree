@@ -3,4 +3,5 @@ export interface Ops {
 	operation: string;
 	letter: string;
 	date: SvelteDate;
+	found: boolean;
 }

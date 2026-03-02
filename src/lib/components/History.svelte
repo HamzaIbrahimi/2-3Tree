@@ -14,9 +14,18 @@
 	<div class="ops-container">
 		{#each opsHistory as ops, index (index)}
 			<div class="ops">
-				<div>
+				<div class="ops-info">
 					<div class="operation {ops.operation.toLowerCase()}">{ops.operation}</div>
 					<div class="letter">{ops.letter}</div>
+					{#if ops.operation === 'Find' || ops.operation === 'Delete'}
+						<div class="failure" style="display: {ops.found ? 'none' : 'block'}">
+							not found in the tree
+						</div>
+					{:else if ops.operation === 'Insert'}
+						<div class="failure" style="display: {ops.found ? 'block' : 'none'}">
+							Already exists in the tree
+						</div>
+					{/if}
 				</div>
 				<div class="timestamp">
 					{ops.date.getHours()}:{pad(ops.date.getMinutes())}:{pad(ops.date.getSeconds())}
@@ -60,9 +69,11 @@
 		font-size: 0.9rem;
 	}
 
-	.ops > div {
+	.ops-info {
 		display: flex;
+		align-items: center;
 		gap: 0.5rem;
+		width: 100%;
 	}
 
 	.letter {
@@ -82,6 +93,14 @@
 		background-color: var(--bg-error);
 		color: var(--text-error);
 	}
+
+	.failure {
+		font-size: 0.6rem;
+		font-weight: 600;
+		text-transform: uppercase;
+		color: var(--text-error);
+	}
+
 	.find {
 		background-color: var(--bg-warning);
 		color: var(--text-warning);

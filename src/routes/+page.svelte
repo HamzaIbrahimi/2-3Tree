@@ -8,33 +8,33 @@
 	let timeStamps = $state<Ops[]>([]);
 	let treeViz: TreeVisualization;
 
-	function addTimeStamp(operation: string, letter: string) {
+	function addTimeStamp(operation: string, letter: string, found: boolean) {
 		let date = new SvelteDate();
-		timeStamps.unshift({ operation, letter, date });
+		timeStamps.unshift({ operation, letter, date, found });
 	}
 
 	async function handleInsert(value: string) {
 		if (!treeViz) return;
 
 		if (treeViz.search(value)) {
-			alert(`'${value}' already exists in the tree!`);
+			addTimeStamp('Insert', value, true);
 			return;
 		}
 
+		addTimeStamp('Insert', value, false);
 		await treeViz.insert(value);
-		addTimeStamp('Insert', value);
 	}
 
 	async function handleDelete(value: string) {
 		if (!treeViz) return;
 
-		if (!treeViz.search(value)) {
-			alert(`'${value}' not found in the tree!`);
+		if (treeViz.search(value)) {
+			addTimeStamp('Delete', value, true);
+			await treeViz.remove(value);
 			return;
 		}
 
-		await treeViz.remove(value);
-		addTimeStamp('Delete', value);
+		addTimeStamp('Delete', value, false);
 	}
 
 	function reset() {
@@ -44,7 +44,11 @@
 	async function handleFind(value: string) {
 		if (!treeViz) return;
 		const found = await treeViz.animateSearch(value);
-		addTimeStamp('Find', value);
+		if (found) {
+			addTimeStamp('Find', value, true);
+			return;
+		}
+		addTimeStamp('Find', value, false);
 	}
 </script>
 
@@ -92,7 +96,7 @@
 	@media (max-width: 650px) {
 		.page-container {
 			grid-template-columns: 1fr;
-			grid-template-rows: 200px 400px auto;
+			grid-template-rows: 200px 400px 1fr;
 			padding: 0;
 		}
 
