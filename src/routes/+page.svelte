@@ -96,7 +96,7 @@
 	@media (max-width: 650px) {
 		.page-container {
 			grid-template-columns: 1fr;
-			grid-template-rows: 200px 400px 1fr;
+			grid-template-rows: 200px 400px 200px;
 			padding: 0;
 		}
 
