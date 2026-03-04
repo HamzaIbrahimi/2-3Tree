@@ -93,10 +93,10 @@
 			placeholder={active
 				? 'Enter a letter or letters (eg A or A,B,C)'
 				: 'Enter an integer or integers (eg 1 or 1,2,3)'}
-			pattern={active ? '[a-zA-Z](,[a-zA-Z]+)*' : '[0-9]+(,[0-9]+)*'}
+			pattern={active ? '[a-zA-Z](,\\s*[a-zA-Z])*' : '[0-9]+(,\\s*[0-9]+)*'}
 			title={active
-				? 'A single letter or letters separated by commas: Example A or A,B,C'
-				: 'An integer or integers separated by commas: Example 1 or 1,2,3'}
+				? 'A single letter or letters separated by commas: Example A or A,B,C or A, B, C'
+				: 'An integer or integers separated by commas: Example 1 or 1,2,3 or 1, 2, 3'}
 		/>
 		<div class="operation-buttons">
 			<button
