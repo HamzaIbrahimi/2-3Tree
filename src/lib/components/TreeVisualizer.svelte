@@ -9,9 +9,10 @@
 		onInsert?: (value: string) => Promise<void>;
 		onDelete?: (value: string) => Promise<void>;
 		onSearch?: (value: string) => boolean;
+		clearStamps?: () => void;
 	}
 
-	let { onInsert, onDelete, onSearch }: Props = $props();
+	let { onInsert, onDelete, onSearch, clearStamps }: Props = $props();
 
 	let container = $state<HTMLDivElement>();
 	let tree = $state(new TwoThreeTree());
@@ -61,6 +62,9 @@
 			visualizer.setTree(tree);
 			size = 0;
 			visualizer.draw();
+			if (clearStamps) {
+				clearStamps();
+			}
 		}
 	}
 

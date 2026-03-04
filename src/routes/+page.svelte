@@ -56,7 +56,7 @@
 	<Input insertInto={handleInsert} deleteFrom={handleDelete} findFrom={handleFind} {reset} />
 	<History opsHistory={timeStamps} />
 	<div class="visualization-container">
-		<TreeVisualization bind:this={treeViz} />
+		<TreeVisualization bind:this={treeViz} clearStamps={() => (timeStamps = [])} />
 	</div>
 </div>
 
