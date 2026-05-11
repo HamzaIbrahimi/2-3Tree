@@ -11,7 +11,7 @@
 		<div class="error-number">{page.status}</div>
 		<h1>Page was not found</h1>
 		<p>The page you're looking for does not exist or has been moved</p>
-		<a href="/" class="home-btn">← Go to Homepage</a>
+		<a href="/2-3Tree" class="home-btn">← Go to Homepage</a>
 	</div>
 </div>
 
