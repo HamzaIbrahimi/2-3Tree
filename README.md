@@ -4,12 +4,12 @@ Live link -> [2-3 tree visualizer](https://hamzaibrahimi.github.io/2-3Tree/)
 
 ## Correctness
 
-Since it can be difficult to visually see what's going on a in a 2-3 tree, a pretty print function helps immensely (See [prettyPrint.ts](./src/lib/util/prettyPrint.ts)).
-Let's take an example taken directly from the Algorithms book by Robert Sedgewick and Kevin Wayne and apply it directly to our tree object. We expect to see a structure that looks like this:
+Since it can be difficult to observe dynamic changes in 2-3 trees with print commands and debuggers, a pretty print function helps immensely (See [prettyPrint.ts](./src/lib/util/prettyPrint.ts)).
+Let's take an example taken directly from the Algorithms book by Robert Sedgewick and Kevin Wayne and apply it directly to our 2-3 tree object. We expect to see a structure that looks like this:
 
 ### Example 1 - page 430 of the Algorithms Book
 
-<img src = "./src/lib/assets/tree_pics/example_1_tree.png" alt = "a 2-3 tree example" style = "width: 400px; height:200px">
+<img src = "./images/example_1_tree.png" alt = "a 2-3 tree example" style = "width: 400px; height:200px">
 
 ### Code
 
@@ -38,7 +38,7 @@ This result confirms that the tree works correctly for insertion operations, but
 
 ### Example 2 (3Node) - page 430 of the Algorithms Book
 
-<img src = "./src/lib/assets/tree_pics/example_2_tree.png" alt = "a 2-3 tree example" style = "width: 400px; height:200px">
+<img src = "./images/example_2_tree.png" alt = "a 2-3 tree example" style = "width: 400px; height:200px">
 
 ```js
 const tree23 = new TwoThreeTree();
