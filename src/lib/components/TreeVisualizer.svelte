@@ -4,7 +4,6 @@
 	import TreeVisualizer from '$lib/visualization/TreeVisualizer';
 	import reset from '$lib/assets/debug-restart.svg';
 
-	// Props for parent component to control the tree
 	interface Props {
 		onInsert?: (value: string) => Promise<void>;
 		onDelete?: (value: string) => Promise<void>;
@@ -26,7 +25,6 @@
 		}
 	});
 
-	// Expose methods to parent component
 	export async function insert(value: string) {
 		if (!visualizer) return;
 
@@ -49,9 +47,8 @@
 
 	export async function remove(value: string) {
 		if (!visualizer) return;
-
 		tree.delete(value);
-		visualizer.draw(); // For now, just redraw (can add animation later)
+		visualizer.draw();
 		size = tree.size();
 		if (onDelete) await onDelete(value);
 	}
@@ -66,14 +63,6 @@
 				clearStamps();
 			}
 		}
-	}
-
-	export function getSize(): number {
-		return tree.size();
-	}
-
-	export function getTree(): TwoThreeTree {
-		return tree;
 	}
 </script>
 
